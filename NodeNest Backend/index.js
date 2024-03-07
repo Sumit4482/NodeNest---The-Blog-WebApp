@@ -1,21 +1,23 @@
-//Imports
+require('dotenv').config(); // Load environment variables
 const express = require('express');
-const app = express();
+const bodyParser = require('body-parser');
+const userRoutes = require('./routes/userRoutes');
 const connectDB = require('./config/db');
-const port = process.env.PORT || 3000;
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Connect to MongoDB
 connectDB();
 
-// Define routes
-app.get('/', (req, res) => {
-  res.send('Welcome to NodeNest!');
-});
+// Routes
+app.use('/api/users', userRoutes);
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });

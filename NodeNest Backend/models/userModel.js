@@ -5,8 +5,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     fullName: { type: String, required: true },
-    profilePicture: String,
-    bio: String,
+    profilePicture: { type: String }, // Make profilePicture optional
+    bio: { type: String }, // Make bio optional
     socialMedia: {
         twitter: String,
         linkedIn: String

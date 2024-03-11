@@ -1,17 +1,36 @@
-// services/userServices.js
-
 const User = require("../models/userModel");
 
 const UserServices = {
-    async createUser(userData) {
-        const { username, email, password, fullName, isAdmin } = userData;
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            throw new Error("User already exists");
-        }
-        const newUser = new User({ username, email, password, fullName, isAdmin });
-        await newUser.save();
-    },
+  async createUser(userData) {
+    try {
+      console.log('Received userData:', userData);
+      const { username, email, password, fullName, profilePicture, bio, socialMedia, lastLogin, status, interests, isAdmin } = userData;
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        console.log('User already exists:', existingUser);
+        throw new Error("User already exists");
+      }
+      const newUser = new User({ 
+        username, 
+        email, 
+        password, 
+        fullName, 
+        profilePicture, 
+        bio, 
+        socialMedia, 
+        lastLogin, 
+        status, 
+        interests, 
+        isAdmin 
+      });
+      console.log('New user data:', newUser);
+      await newUser.save();
+      console.log('User saved successfully');
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
+  },  
   async findUserByEmail(email) {
     return await User.findOne({ email });
   },
@@ -58,7 +77,7 @@ const UserServices = {
         console.error('Error retrieving users:', error);
         throw error;
     }
-}
+  }
 };
 
 module.exports = UserServices;

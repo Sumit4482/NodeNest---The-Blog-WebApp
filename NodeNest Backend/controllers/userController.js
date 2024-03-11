@@ -8,38 +8,53 @@ const User = require("../models/userModel");
 const UserController = {
   async registerUser(req, res) {
     try {
+      console.log('Received registration request:', req.body);
       // Validate input data
       const { error } = registerValidation.validate(req.body);
       if (error) {
+        console.log('Validation error:', error.details[0].message);
         return res.status(400).json({ message: error.details[0].message });
       }
-
-      const { username, email, password, fullName } = req.body;
-
+  
+      // Destructure req.body with default values of null for non-required fields
+      const { username, email, password, fullName, profilePicture = null, bio = null, socialMedia = null, lastLogin = null, status = null, interests = null, isAdmin = null } = req.body;
+  
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
-
+      console.log('Password hashed:', hashedPassword);
+  
       // Create user with hashed password
       await UserServices.createUser({
         username,
         email,
         password: hashedPassword,
         fullName,
+        profilePicture,
+        bio,
+        socialMedia,
+        lastLogin,
+        status,
+        interests,
+        isAdmin
       });
+      console.log('User created successfully');
+  
       res.status(201).json({ message: "User created successfully" });
     } catch (error) {
       console.error("Error registering user:", error);
       let statusCode = 500;
       let message = "Internal server error";
-
+  
       if (error.message === "User already exists") {
+        console.log('User already exists');
         statusCode = 400;
         message = "User already exists";
       }
-
+  
       res.status(statusCode).json({ message });
     }
   },
+  
   async loginUser(req, res) {
     try {
       const { error } = loginValidation.validate(req.body);

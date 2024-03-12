@@ -1,21 +1,22 @@
-//Imports
+require('dotenv').config();
 const express = require('express');
-const app = express();
+const bodyParser = require('body-parser');
+const userRoutes = require('./routes/userRoutes');
 const connectDB = require('./config/db');
-const port = process.env.PORT || 3000;
-
-// Middleware to parse JSON bodies
-app.use(express.json());
-
+const adminRoutes = require('./routes/adminRoutes')
+const app = express();
+const PORT = process.env.PORT || 3000;
+const blogRoutes = require('./routes/blogRoutes');
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 // Connect to MongoDB
 connectDB();
-
-// Define routes
-app.get('/', (req, res) => {
-  res.send('Welcome to NodeNest!');
-});
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// Routes
+app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes); 
+app.use('/api', blogRoutes);
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
